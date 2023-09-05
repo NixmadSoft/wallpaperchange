@@ -1,0 +1,27 @@
+#Carpeta de destino
+$carpeta = "C:\Fondo"
+
+# Verifica si la carpeta de destino existe; si no existe, la crea
+if (-Not (Test-Path -Path $carpeta -PathType Container)) {
+    New-Item -Path $carpeta -ItemType Directory
+}
+
+# Copia el archivo Wallpaper a la carpeta de destino
+Copy-Item -Path "Wallpaper.png" -Destination $carpetaDestino
+
+$archivos = Get-ChildItem -Path $carpeta
+
+$rutaImagen = "C:\Fondo\$archivos"
+
+# Configura el fondo de pantalla sin necesidad de reiniciar
+$RegKeyPath = "HKCU:\Control Panel\Desktop"
+$RegValueName = "Wallpaper"
+
+# Cambia el fondo de pantalla
+Set-ItemProperty -Path $RegKeyPath -Name $RegValueName -Value $rutaImagen
+
+# Actualiza la configuración del fondo de pantalla
+RUNDLL32.EXE USER32.DLL,UpdatePerUserSystemParameters
+
+# Aplica los cambios al fondo de pantalla
+RUNDLL32.EXE USER32.DLL,UpdatePerUserSystemParameters 1, True
